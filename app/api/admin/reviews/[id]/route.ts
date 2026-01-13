@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { del } from '@vercel/blob'
 
 const updateSchema = z.object({
     status: z.enum(['NEW', 'APPROVED', 'ARCHIVED', 'REJECTED']).optional(),
@@ -19,14 +20,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         const json = await request.json()
         const result = updateSchema.safeParse(json)
 
-        // params is a promise in recent Next.js versions
         const { id } = await params
 
         if (!result.success) {
             return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
         }
 
-        // Transform tags array to string for SQLite
         const updateData: any = { ...result.data }
         if (result.data.tags) {
             updateData.tags = result.data.tags.join(',')
@@ -51,21 +50,35 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     const { id } = await params
 
+    try {
+        // 1. Get the review to find the audio URL
+        const review = await prisma.review.findUnique({
+            where: { id },
+            select: { audioUrl: true }
+        })
 
-    // Soft delete
-    await prisma.review.update({
-        where: { id },
-        data: { deletedAt: new Date() }
-    })
+        if (!review) {
+            return NextResponse.json({ error: 'Review not found' }, { status: 404 })
+        }
 
-    // Force cache purge
-    // But this route is an API route, not a server action. 
-    // Usually client should re-fetch.
-    // But to be sure, we can revalidate.
-    // import { revalidatePath } from 'next/cache'
-    // revalidatePath('/admin/dashboard') // Might not work in API route context in all Next versions or setup.
-    // Simpler: Just rely on client-side no-store or tag invalidation.
-    // I'll stick to simple response for now, but client must use no-cache.
+        // 2. Delete from Vercel Blob
+        if (review.audioUrl && review.audioUrl.startsWith('http')) {
+            try {
+                await del(review.audioUrl);
+            } catch (err) {
+                console.error("Failed to delete blob:", err);
+                // Continue to delete DB record anyway
+            }
+        }
 
-    return NextResponse.json({ success: true })
+        // 3. Hard Delete from DB
+        await prisma.review.delete({
+            where: { id }
+        })
+
+        return NextResponse.json({ success: true })
+    } catch (error) {
+        console.error("Delete error:", error);
+        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
+    }
 }
