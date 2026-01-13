@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// SQLite compatible schema
+
+model Movie {
+  id          String   @id @default(cuid())
+  tmdbId      Int      @unique
+  title       String
+  slug        String   @unique
+  posterUrl   String?
+  overview    String?  // SQLite handles Text automatically as String
+  releaseDate String?
+  mediaType   String   @default("movie") // "movie" or "tv"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  reviews     Review[]
+  activeEntry ActiveMovie?
+}
+
+model ActiveMovie {
+  id        String   @id @default(cuid())
+  movieId   String   @unique
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id          String       @id @default(cuid())
+  movieId     String
+  movie       Movie        @relation(fields: [movieId], references: [id])
+  
+  displayName String?      
+  audioUrl    String
+  audioMime   String       
+  durationSec Int          
+  
+  status      String       @default("NEW") // "NEW", "APPROVED", "ARCHIVED", "REJECTED"
+  tags        String       @default("")    // Store as comma-separated string
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+
+  @@index([movieId])
+  @@index([status])
+}
