@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { writeFile } from 'fs/promises'
-import path from 'path'
+import { put } from '@vercel/blob'
 import { randomUUID } from 'crypto'
 import rateLimit from '@/lib/rate-limit'
 import { headers } from 'next/headers'
@@ -31,17 +30,17 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
         }
 
-        // Save File Locally
-        const buffer = Buffer.from(await audioFile.arrayBuffer())
-        const filename = `${randomUUID()}.webm`
-        const filePath = path.join(process.cwd(), 'public/uploads', filename)
-        await writeFile(filePath, buffer)
+        // Save File to Vercel Blob
+        const filename = `reviews/${randomUUID()}.webm`
+        const blob = await put(filename, audioFile, {
+            access: 'public',
+        })
 
         // Save to DB
         const review = await prisma.review.create({
             data: {
                 movieId,
-                audioUrl: `/uploads/${filename}`,
+                audioUrl: blob.url,
                 audioMime: audioFile.type || 'audio/webm',
                 durationSec,
                 displayName: displayName || 'Anonymous',
@@ -52,6 +51,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ review })
     } catch (error) {
         console.error('Submit Simple Review Error:', error)
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+        return NextResponse.json({ error: 'Internal Server Error', details: String(error) }, { status: 500 })
     }
 }
