@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'SAV du Cinéma',
   description: 'Laissez votre avis vocal sur le film du moment.',
+  manifest: '/manifest.json',
+  icons: {
+    apple: '/icon-512x512.png',
+  },
 }
 
 export default function RootLayout({
