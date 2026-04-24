@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { MovieSearch } from '@/components/admin/movie-search';
 import { RecentReviews } from '@/components/admin/recent-reviews';
-import { LogOut, Film, BarChart, Settings, Save, ExternalLink, Loader2 } from 'lucide-react';
+import { LogOut, Film, BarChart, Settings, Save, ExternalLink, Loader2, Copy } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,11 @@ export default function AdminDashboard() {
     const [openSearch, setOpenSearch] = useState(false);
     const [latestVideoUrl, setLatestVideoUrl] = useState('');
     const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+    const copyPublicLink = () => {
+        navigator.clipboard.writeText('https://savcinema.vercel.app/');
+        toast.success('Lien copié !');
+    };
 
     const fetchActiveMovie = async () => {
         const res = await fetch('/api/admin/active-movie');
@@ -58,7 +63,18 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center bg-neutral-900/50 p-6 rounded-2xl border border-neutral-800 backdrop-blur-sm">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight mb-2 text-white">Dashboard</h1>
-                    <p className="text-neutral-400 text-sm">Manage active movie and voice reviews.</p>
+                    <div className="flex items-center gap-4">
+                        <p className="text-neutral-400 text-sm">Manage active movie and voice reviews.</p>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500 hover:text-white rounded-full h-8"
+                            onClick={copyPublicLink}
+                        >
+                            <Copy className="h-3 w-3 mr-2" />
+                            Copier le lien public
+                        </Button>
+                    </div>
                 </div>
                 <Button variant="outline" className="border-neutral-700 hover:bg-neutral-800 text-neutral-300" onClick={() => signOut()}>
                     <LogOut className="h-4 w-4 mr-2" />
