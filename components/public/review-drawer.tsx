@@ -76,11 +76,12 @@ export function ReviewDrawer({ movieId, isOpen, onClose }: ReviewDrawerProps) {
 
     useEffect(() => {
         if (!isRecording && chunks.length > 0 && step === 'PREVIEW') {
-            const blob = new Blob(chunks, { type: 'audio/webm' });
+            const mimeType = mediaRecorder?.mimeType || 'audio/webm';
+            const blob = new Blob(chunks, { type: mimeType });
             const url = URL.createObjectURL(blob);
             setAudioUrl(url);
         }
-    }, [chunks, isRecording, step]);
+    }, [chunks, isRecording, step, mediaRecorder]);
 
     const reset = () => {
         setChunks([]);
@@ -96,11 +97,14 @@ export function ReviewDrawer({ movieId, isOpen, onClose }: ReviewDrawerProps) {
         }
 
         try {
-            const blob = new Blob(chunks, { type: 'audio/webm' });
+            setStep('SENDING');
+            const mimeType = mediaRecorder?.mimeType || 'audio/webm';
+            const blob = new Blob(chunks, { type: mimeType });
 
             const formData = new FormData();
             formData.append('movieId', movieId);
-            formData.append('audioFile', blob, 'review.webm');
+            const ext = mimeType.includes('mp4') ? 'm4a' : mimeType.includes('ogg') ? 'ogg' : 'webm';
+            formData.append('audioFile', blob, `review.${ext}`);
             formData.append('durationSec', duration.toString());
             if (displayName) formData.append('displayName', displayName);
 

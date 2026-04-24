@@ -31,7 +31,8 @@ export async function POST(request: Request) {
         }
 
         // Save File to Vercel Blob
-        const filename = `reviews/${randomUUID()}.webm`
+        const ext = audioFile.name.split('.').pop() || 'webm'
+        const filename = `reviews/${randomUUID()}.${ext}`
         const blob = await put(filename, audioFile, {
             access: 'public',
         })
