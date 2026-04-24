@@ -270,16 +270,16 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
 
                         {step === 'IDLE' && (
                             <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6 }}
                             >
                                 <Button
-                                    variant="ghost"
-                                    className="text-neutral-500 hover:text-white hover:bg-white/5 rounded-full px-6"
+                                    variant="outline"
+                                    className="bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-neutral-300 hover:text-white rounded-full px-6 py-5 backdrop-blur-md transition-all shadow-lg"
                                     onClick={() => setOpenSearch(true)}
                                 >
-                                    <Search className="w-4 h-4 mr-2" />
+                                    <Search className="w-4 h-4 mr-2 text-indigo-400" />
                                     Mon avis sur un autre film !
                                 </Button>
                             </motion.div>
