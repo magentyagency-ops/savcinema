@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { MovieSearch } from '@/components/admin/movie-search';
 import { RecentReviews } from '@/components/admin/recent-reviews';
-import { LogOut, Film, BarChart, Settings, Save, ExternalLink } from 'lucide-react';
+import { LogOut, Film, BarChart, Settings, Save, ExternalLink, Loader2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
