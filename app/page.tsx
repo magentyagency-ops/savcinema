@@ -53,9 +53,6 @@ export default async function Home() {
                 <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight tight-shadow mb-4">
                   {movie.title}
                 </h1>
-                <p className="text-lg text-neutral-300 leading-relaxed max-w-lg mb-2">
-                  {movie.overview}
-                </p>
                 <p className="text-sm text-neutral-500">
                   Sortie : {new Date(movie.releaseDate || '').toLocaleDateString('fr-FR', {
                     year: 'numeric', month: 'long', day: 'numeric'
@@ -67,16 +64,16 @@ export default async function Home() {
             </div>
 
             {/* SAV CTA Card - Floating or Integrated */}
-            <div className="hidden md:flex flex-col items-center animate-in fade-in slide-in-from-right-10 duration-1000 delay-300">
+            <div className="flex flex-col items-center animate-in fade-in slide-in-from-right-10 duration-1000 delay-300">
               <div className="relative group cursor-pointer" title="Allô SAV ?">
                 <div className="absolute -inset-0.5 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                <div className="relative bg-neutral-900 border border-neutral-800 p-2 rounded-2xl flex flex-col items-center gap-3 w-48 shadow-2xl transform group-hover:-translate-y-2 transition duration-300">
+                <div className="relative bg-neutral-900 border border-neutral-800 p-2 rounded-2xl flex flex-col items-center gap-3 w-32 md:w-48 shadow-2xl transform group-hover:-translate-y-2 transition duration-300">
                   <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-neutral-800">
                     <img src="/sav-hero.png" alt="Allô SAV" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
                   </div>
                   <div className="text-center pb-2">
-                    <p className="text-yellow-400 font-bold text-sm tracking-wider">ALLÔ SAV ?</p>
-                    <p className="text-neutral-400 text-[10px] leading-tight mt-1">Lâche ton meilleur avis !</p>
+                    <p className="text-yellow-400 font-bold text-[10px] md:text-sm tracking-wider">ALLÔ SAV ?</p>
+                    <p className="text-neutral-400 text-[8px] md:text-[10px] leading-tight mt-1">Lâche ton meilleur avis !</p>
                   </div>
                 </div>
               </div>
