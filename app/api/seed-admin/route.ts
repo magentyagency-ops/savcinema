@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export async function GET() {
     try {
         const email = 'admin@savcinema.com';
-        const password = 'password123';
+        const password = 'ashanti123';
         const hashedPassword = await hash(password, 10);
 
         await prisma.adminUser.upsert({
