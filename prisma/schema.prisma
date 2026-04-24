@@ -60,3 +60,9 @@ model Review {
   @@index([movieId])
   @@index([status])
 }
+
+model GlobalSettings {
+  id            String   @id @default("singleton")
+  latestVideoUrl String?
+  updatedAt     DateTime @updatedAt
+}

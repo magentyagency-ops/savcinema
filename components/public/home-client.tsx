@@ -23,6 +23,17 @@ export default function HomeClient({ movie }: { movie: any }) {
     const [displayName, setDisplayName] = useState('');
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+    const [latestVideoUrl, setLatestVideoUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Fetch public settings
+        fetch('/api/public/settings').then(res => res.json()).then(data => {
+            if (data.settings?.latestVideoUrl) {
+                setLatestVideoUrl(data.settings.latestVideoUrl);
+            }
+        });
+    }, []);
+
     const startRecording = async () => {
         try {
             const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -181,7 +192,7 @@ export default function HomeClient({ movie }: { movie: any }) {
                         <img 
                             src="/sav-hero.png" 
                             alt="SAV du Cinéma" 
-                            className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" 
+                            className="w-full h-full object-top object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" 
                         />
                         <div className="absolute bottom-4 left-6 z-20">
                             <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-2 backdrop-blur-md">
@@ -252,13 +263,27 @@ export default function HomeClient({ movie }: { movie: any }) {
                                     <p className="text-neutral-400 max-w-[280px] mx-auto text-sm leading-relaxed mb-8">
                                         Ton avis a bien été reçu par l'équipe. Croise les doigts pour être dans le prochain épisode ! 🍿
                                     </p>
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full rounded-xl border-neutral-700 hover:bg-neutral-800 hover:text-white"
-                                        onClick={() => reset()}
-                                    >
-                                        Fermer
-                                    </Button>
+                                    
+                                    <div className="w-full space-y-3">
+                                        {latestVideoUrl && (
+                                            <Button 
+                                                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl h-12 shadow-[0_0_20px_rgba(220,38,38,0.3)] transition-all"
+                                                asChild
+                                            >
+                                                <a href={latestVideoUrl} target="_blank" rel="noreferrer">
+                                                    <Play className="h-4 w-4 mr-2 fill-current" /> 
+                                                    Voir le dernier épisode
+                                                </a>
+                                            </Button>
+                                        )}
+                                        <Button 
+                                            variant="outline" 
+                                            className="w-full rounded-xl border-neutral-700 hover:bg-neutral-800 hover:text-white h-12"
+                                            onClick={() => reset()}
+                                        >
+                                            Fermer
+                                        </Button>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
