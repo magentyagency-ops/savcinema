@@ -2,7 +2,7 @@
   "name": "SAV du Cinéma",
   "short_name": "SAV Cinéma",
   "description": "Laissez votre avis vocal sur le film du moment.",
-  "start_url": "/",
+  "start_url": "/admin/dashboard",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#4f46e5",
