@@ -54,7 +54,7 @@ export function ReviewDrawer({ movieId, isOpen, onClose }: ReviewDrawerProps) {
             timerRef.current = setInterval(() => {
                 sec++;
                 setDuration(sec);
-                if (sec >= 90) stopRecording(); // Max 90s
+                if (sec >= 60) stopRecording();
             }, 1000);
 
         } catch (err) {
@@ -129,13 +129,20 @@ export function ReviewDrawer({ movieId, isOpen, onClose }: ReviewDrawerProps) {
         return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
+    const formatCountdown = (sec: number) => {
+        const remaining = Math.max(0, 60 - sec);
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent side="bottom" className="h-[90vh] sm:h-auto sm:rounded-t-xl bg-neutral-900 border-neutral-800 text-white p-6">
                 <SheetHeader>
                     <SheetTitle>Leave a Voice Review</SheetTitle>
                     <SheetDescription className="text-neutral-400">
-                        Share your thoughts on the movie in under 90 seconds.
+                        Share your thoughts on the movie in under 60 seconds.
                     </SheetDescription>
                 </SheetHeader>
 
@@ -147,7 +154,7 @@ export function ReviewDrawer({ movieId, isOpen, onClose }: ReviewDrawerProps) {
                                 className="flex flex-col items-center gap-4 w-full"
                             >
                                 <div className="text-4xl font-mono font-bold tracking-widest text-indigo-400">
-                                    {formatTime(duration)}
+                                    {formatCountdown(duration)}
                                 </div>
 
                                 {isRecording ? (

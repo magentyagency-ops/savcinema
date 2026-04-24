@@ -85,11 +85,7 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
             timerRef.current = setInterval(() => {
                 sec++;
                 setDuration(sec);
-                if (sec >= 60) { // Limit to 1 minute
-                    if (timerRef.current) clearInterval(timerRef.current);
-                    // We call stopRecording but we need to be careful with state
-                    // The stopRecording function uses mediaRecorder state
-                }
+                if (sec >= 60) stopRecording();
             }, 1000);
         } catch (err) {
             console.error(err);
@@ -107,13 +103,6 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
             setStep('PREVIEW');
         }
     };
-
-    // Effect to handle automatic stop at 60s
-    useEffect(() => {
-        if (duration >= 60 && step === 'REC') {
-            stopRecording();
-        }
-    }, [duration, step]);
 
     useEffect(() => {
         if (!isRecording && chunks.length > 0 && step === 'PREVIEW') {
@@ -161,6 +150,13 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
     const formatTime = (sec: number) => {
         const m = Math.floor(sec / 60);
         const s = sec % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const formatCountdown = (sec: number) => {
+        const remaining = Math.max(0, 60 - sec);
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
         return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
@@ -252,26 +248,12 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
                                         initial={{ scale: 0.5, opacity: 0, width: 200 }}
                                         animate={{ scale: 1, opacity: 1, width: 340 }}
                                         exit={{ scale: 0.8, opacity: 0, y: -20 }}
-                                        className="absolute bg-neutral-900/90 backdrop-blur-md border border-red-500/30 rounded-full flex items-center justify-between p-2 pl-6 shadow-[0_0_50px_rgba(239,68,68,0.3)] relative"
+                                        className="absolute bg-neutral-900/90 backdrop-blur-md border border-red-500/30 rounded-full flex items-center justify-between p-2 pl-6 shadow-[0_0_50px_rgba(239,68,68,0.3)] overflow-hidden"
                                     >
-                                        {/* Fuse Countdown Animation */}
-                                        <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-full overflow-visible">
-                                            <motion.rect
-                                                x="0" y="0" width="100%" height="100%" rx="9999"
-                                                fill="transparent"
-                                                stroke="rgba(239, 68, 68, 0.6)"
-                                                strokeWidth="4"
-                                                initial={{ pathLength: 1 }}
-                                                animate={{ pathLength: (60 - duration) / 60 }}
-                                                transition={{ duration: 1, ease: "linear" }}
-                                                style={{ rotate: -90, originX: "50%", originY: "50%" }}
-                                            />
-                                        </svg>
-
-                                        <div className="flex items-center gap-4 flex-1 relative z-10">
+                                        <div className="flex items-center gap-4 flex-1">
                                             <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,1)]" />
-                                            <div className="font-mono text-red-400 font-bold tracking-wider w-12 text-sm">
-                                                {formatTime(60 - duration)}
+                                            <div className="font-mono text-red-400 font-bold tracking-wider w-12">
+                                                {formatCountdown(duration)}
                                             </div>
                                             <div
                                                 className="flex-1 h-8 opacity-80 overflow-hidden relative rounded"
@@ -283,7 +265,7 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
                                         <Button
                                             variant="destructive"
                                             size="icon"
-                                            className="rounded-full h-12 w-12 shrink-0 bg-red-600 hover:bg-red-700 shadow-lg ml-3 relative z-20"
+                                            className="rounded-full h-12 w-12 shrink-0 bg-red-600 hover:bg-red-700 shadow-lg ml-3"
                                             onClick={stopRecording}
                                         >
                                             <Square className="h-5 w-5 fill-current" />
@@ -325,7 +307,7 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
                     <div className="relative h-48 w-full bg-neutral-950 overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent z-10" />
                         <img
-                            src="/sav-logo-v2.png"
+                            src="/sav-hero.png"
                             alt="SAV du Cinéma"
                             className="w-full h-full object-top object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
                         />
