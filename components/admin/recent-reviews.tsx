@@ -101,27 +101,10 @@ export function RecentReviews() {
         }
     };
 
-    const handleDownload = async (url: string, id: string) => {
-        try {
-            toast.info('Préparation du téléchargement...', { id: `dl-${id}` });
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            
-            // Extract extension from url or fallback to webm
-            const ext = url.split('.').pop()?.split('?')[0] || 'webm';
-            a.download = `review-${id}.${ext}`;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
-            toast.success('Téléchargement terminé', { id: `dl-${id}` });
-        } catch (error) {
-            toast.error('Erreur lors du téléchargement', { id: `dl-${id}` });
-        }
+    const handleDownload = (url: string, id: string) => {
+        toast.info('Lancement du téléchargement...', { id: `dl-${id}` });
+        window.location.href = `/api/admin/download?url=${encodeURIComponent(url)}&id=${id}`;
+        setTimeout(() => toast.success('Téléchargement lancé', { id: `dl-${id}` }), 1500);
     };
 
     const toggleGroup = (movieId: string) => {
