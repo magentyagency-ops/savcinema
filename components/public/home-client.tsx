@@ -213,8 +213,8 @@ export default function HomeClient({ initialMovie }: { initialMovie: any }) {
                         </p>
                     </div>
 
-                    <div className="flex flex-col items-center md:items-start gap-6 w-full">
-                        <div className="relative h-24 w-full flex justify-center md:justify-start items-center">
+                    <div className="flex flex-col items-center md:items-start gap-1 w-full">
+                        <div className="relative h-20 w-full flex justify-center md:justify-start items-center">
                             <AnimatePresence mode="wait">
                                 {step === 'IDLE' && (
                                     <motion.div
