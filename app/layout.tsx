@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Laissez votre avis vocal sur le film du moment.',
   manifest: '/manifest.json',
   icons: {
-    apple: '/icon-512x512.png',
+    apple: '/app-icon-large.png',
   },
 }
 
