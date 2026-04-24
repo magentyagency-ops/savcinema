@@ -34,7 +34,7 @@ export default async function Home() {
       <div className="z-10 w-full max-w-4xl px-6 py-12 flex flex-col md:flex-row gap-12 items-center">
         {movie ? (
           <>
-            {/* Poster */}
+            {/* Poster + SAV Card overlap container */}
             <div className="relative shrink-0 group">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               <img
@@ -42,6 +42,22 @@ export default async function Home() {
                 alt={movie.title}
                 className="relative w-64 md:w-80 rounded-xl shadow-2xl border border-white/10 rotate-1 group-hover:rotate-0 transition-transform duration-500"
               />
+
+              {/* SAV CTA Card - Now overlapping on mobile */}
+              <div className="absolute -bottom-6 -right-6 md:-right-12 md:top-1/2 md:-translate-y-1/2 z-20 flex flex-col items-center animate-in fade-in zoom-in duration-1000 delay-300">
+                <div className="relative group/card cursor-pointer" title="Allô SAV ?">
+                  <div className="absolute -inset-0.5 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl blur opacity-30 group-hover/card:opacity-60 transition duration-500"></div>
+                  <div className="relative bg-neutral-900 border border-neutral-800 p-1.5 md:p-2 rounded-2xl flex flex-col items-center gap-2 md:gap-3 w-28 md:w-40 shadow-2xl transform group-hover/card:-translate-y-2 transition duration-300">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-neutral-800">
+                      <img src="/sav-hero.png" alt="Allô SAV" className="w-full h-full object-cover opacity-90 group-hover/card:opacity-100 transition" />
+                    </div>
+                    <div className="text-center pb-1 md:pb-2">
+                      <p className="text-yellow-400 font-bold text-[9px] md:text-xs tracking-wider">ALLÔ SAV ?</p>
+                      <p className="text-neutral-400 text-[7px] md:text-[9px] leading-tight mt-0.5">Lâche ton meilleur avis !</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Content */}
@@ -61,22 +77,6 @@ export default async function Home() {
               </div>
 
               <HomeClient movie={movie} />
-            </div>
-
-            {/* SAV CTA Card - Floating or Integrated */}
-            <div className="flex flex-col items-center animate-in fade-in slide-in-from-right-10 duration-1000 delay-300">
-              <div className="relative group cursor-pointer" title="Allô SAV ?">
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                <div className="relative bg-neutral-900 border border-neutral-800 p-2 rounded-2xl flex flex-col items-center gap-3 w-32 md:w-48 shadow-2xl transform group-hover:-translate-y-2 transition duration-300">
-                  <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-neutral-800">
-                    <img src="/sav-hero.png" alt="Allô SAV" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
-                  </div>
-                  <div className="text-center pb-2">
-                    <p className="text-yellow-400 font-bold text-[10px] md:text-sm tracking-wider">ALLÔ SAV ?</p>
-                    <p className="text-neutral-400 text-[8px] md:text-[10px] leading-tight mt-1">Lâche ton meilleur avis !</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </>
         ) : (
