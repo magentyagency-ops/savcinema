@@ -60,26 +60,33 @@ export default function AdminDashboard() {
 
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center bg-neutral-900/50 p-6 rounded-2xl border border-neutral-800 backdrop-blur-sm">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight mb-2 text-white">Dashboard</h1>
-                    <div className="flex items-center gap-4">
-                        <p className="text-neutral-400 text-sm">Manage active movie and voice reviews.</p>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500 hover:text-white rounded-full h-8"
-                            onClick={copyPublicLink}
-                        >
-                            <Copy className="h-3 w-3 mr-2" />
-                            Copier le lien public
-                        </Button>
-                    </div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-neutral-900/50 p-6 rounded-2xl border border-neutral-800 backdrop-blur-sm gap-6">
+                <div className="space-y-1">
+                    <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">Dashboard</h1>
+                    <p className="text-neutral-400 text-xs md:text-sm font-medium">Gestion du SAV du Cinéma</p>
                 </div>
-                <Button variant="outline" className="border-neutral-700 hover:bg-neutral-800 text-neutral-300" onClick={() => signOut()}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                </Button>
+                
+                <div className="flex items-center gap-3 w-full md:w-auto border-t md:border-t-0 border-neutral-800 pt-4 md:pt-0">
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 md:flex-none bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500 hover:text-white rounded-xl h-10 md:h-9 transition-all"
+                        onClick={copyPublicLink}
+                    >
+                        <Copy className="h-3.5 w-3.5 mr-2" />
+                        <span className="inline">Copier le lien</span>
+                    </Button>
+                    
+                    <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => signOut()} 
+                        className="text-neutral-400 hover:text-white hover:bg-red-500/10 hover:text-red-400 rounded-xl h-10 md:h-9 transition-all"
+                    >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        <span className="hidden sm:inline">Déconnexion</span>
+                    </Button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
