@@ -28,8 +28,7 @@ export function AudioVisualizer({ stream }: { stream: MediaStream | null }) {
             animationId = requestAnimationFrame(draw);
             analyser.getByteFrequencyData(dataArray);
 
-            ctx.fillStyle = '#0a0a0a'; // Background matching bg
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const barWidth = (canvas.width / bufferLength) * 2.5;
             let barHeight;
@@ -58,5 +57,5 @@ export function AudioVisualizer({ stream }: { stream: MediaStream | null }) {
         };
     }, [stream]);
 
-    return <canvas ref={canvasRef} width={300} height={60} className="w-full h-[60px] rounded bg-neutral-950" />;
+    return <canvas ref={canvasRef} width={300} height={60} className="w-full h-[60px] rounded" />;
 }
