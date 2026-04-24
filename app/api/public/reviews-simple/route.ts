@@ -4,6 +4,7 @@ import { put } from '@vercel/blob'
 import { randomUUID } from 'crypto'
 import rateLimit from '@/lib/rate-limit'
 import { headers } from 'next/headers'
+import { getMedia } from '@/lib/tmdb'
 
 const limiter = rateLimit({
     interval: 60 * 1000, // 60 seconds
@@ -21,13 +22,54 @@ export async function POST(request: Request) {
         }
 
         const formData = await request.formData()
-        const movieId = formData.get('movieId') as string
+        let movieId = formData.get('movieId') as string
         const audioFile = formData.get('audioFile') as File
         const durationSec = parseInt(formData.get('durationSec') as string || '0')
         const displayName = formData.get('displayName') as string
 
         if (!movieId || !audioFile) {
             return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+        }
+
+        // Handle TMDB-prefixed IDs (local overrides)
+        if (movieId.startsWith('tmdb-')) {
+            const tmdbIdStr = movieId.replace('tmdb-', '')
+            const tmdbId = parseInt(tmdbIdStr)
+            
+            // Check if already in DB
+            let movie = await prisma.movie.findUnique({
+                where: { tmdbId }
+            })
+
+            if (!movie) {
+                // Not in DB, fetch from TMDB and create
+                // We don't know if it's a movie or tv, but we can try to guess or use the media_type if we have it.
+                // For now, let's assume 'movie' or try both. 
+                // Actually, I should have passed the media_type in the formData.
+                // Let's try to get it as movie first, then tv if it fails.
+                let tmdbData = await getMedia(tmdbId, 'movie')
+                if (!tmdbData) tmdbData = await getMedia(tmdbId, 'tv')
+
+                if (tmdbData) {
+                    movie = await prisma.movie.create({
+                        data: {
+                            tmdbId: tmdbData.id,
+                            title: tmdbData.title || tmdbData.name || 'Unknown',
+                            slug: `${tmdbData.id}-${randomUUID().slice(0, 4)}`,
+                            posterUrl: tmdbData.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : null,
+                            overview: tmdbData.overview,
+                            releaseDate: tmdbData.release_date || tmdbData.first_air_date,
+                            mediaType: tmdbData.media_type as string
+                        }
+                    })
+                }
+            }
+
+            if (movie) {
+                movieId = movie.id
+            } else {
+                return NextResponse.json({ error: 'Movie not found' }, { status: 404 })
+            }
         }
 
         // Save File to Vercel Blob
