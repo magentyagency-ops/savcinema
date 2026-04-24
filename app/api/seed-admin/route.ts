@@ -1,9 +1,6 @@
-
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 export async function GET() {
     try {
@@ -11,7 +8,7 @@ export async function GET() {
         const password = 'ashanti123';
         const hashedPassword = await hash(password, 10);
 
-        await prisma.adminUser.upsert({
+        const user = await prisma.adminUser.upsert({
             where: { email },
             update: {
                 password: hashedPassword,
@@ -22,11 +19,14 @@ export async function GET() {
             },
         });
 
-        return NextResponse.json({ message: 'Admin user seeded successfully' });
+        console.log('Admin user seeded:', user.email);
+        return NextResponse.json({ 
+            message: 'Admin user seeded successfully',
+            email: user.email,
+            timestamp: new Date().toISOString()
+        });
     } catch (error) {
         console.error('Seeding error:', error);
         return NextResponse.json({ error: 'Failed to seed admin user', details: String(error) }, { status: 500 });
-    } finally {
-        await prisma.$disconnect();
     }
 }
